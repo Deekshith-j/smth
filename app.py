@@ -9,9 +9,27 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 HR_RAG_DIR = os.path.join(ROOT_DIR, "hr-rag")
 sys.path.insert(0, HR_RAG_DIR)
 
-from dotenv import load_dotenv
-load_dotenv(os.path.join(HR_RAG_DIR, ".env"))   # hr-rag/.env first
-load_dotenv(os.path.join(ROOT_DIR, ".env"))      # root .env overrides
+# Load .env locally; on Streamlit Cloud secrets come from st.secrets
+try:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(HR_RAG_DIR, ".env"))
+    load_dotenv(os.path.join(ROOT_DIR, ".env"))
+except ImportError:
+    pass  # python-dotenv not installed; will use st.secrets or env vars
+
+# Pull from Streamlit Secrets (set in share.streamlit.io → App Settings → Secrets)
+for _k in [
+    "GROQ_API_KEY", "GOOGLE_API_KEY", "OPENAI_API_KEY",
+    "LANGCHAIN_API_KEY", "LANGCHAIN_PROJECT", "LANGCHAIN_TRACING_V2",
+    "LANGCHAIN_ENDPOINT", "LLM_PROVIDER", "LLM_MODEL",
+    "STREAMLIT_LINK", "LANGSMITH_LINK",
+]:
+    try:
+        _v = st.secrets.get(_k)
+        if _v:
+            os.environ[_k] = _v
+    except Exception:
+        pass
 
 # ─── Page Config ──────────────────────────────────────────────────────────────
 st.set_page_config(

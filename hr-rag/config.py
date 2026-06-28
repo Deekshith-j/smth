@@ -1,10 +1,12 @@
 import os
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-
-# Load environment variables
-load_dotenv()
 
 # Select LLM provider: "gemini" | "groq" | "openai" | "ollama"
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq").lower()
