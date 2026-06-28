@@ -1,0 +1,34 @@
+# Core LangChain
+langchain>=0.2.6
+langchain-community>=0.2.6
+langchain-core>=0.2.10
+langchain-text-splitters>=0.2.0
+
+# LLM Providers
+langchain-groq>=0.1.5
+langchain-google-genai>=1.0.7
+langchain-openai>=0.1.9
+
+# Embeddings
+langchain-huggingface>=0.0.3
+sentence-transformers>=3.0.1
+transformers>=4.41.2
+torch>=2.3.1
+
+# Vector Store
+faiss-cpu>=1.8.0
+
+# Agent (ReAct)
+langgraph>=0.1.0
+
+# PDF Loading
+pypdf>=4.2.0
+
+# Monitoring & Tracing
+langsmith>=0.1.81
+
+# App & Utilities
+streamlit>=1.36.0
+python-dotenv>=1.0.1
+cryptography>=42.0.8
+tiktoken>=0.7.0
