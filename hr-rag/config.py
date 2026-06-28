@@ -87,7 +87,9 @@ def get_vectorstore(vectorstore_dir=None):
     Loads and returns the local FAISS vector store.
     """
     if not vectorstore_dir:
-        vectorstore_dir = r"c:\Users\Deekshith J\OneDrive\Desktop\niat-masterclass-rag-challenge\hr-rag\vectorstore"
+        # Relative to this config.py file — works on Windows and Linux (Streamlit Cloud)
+        vectorstore_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vectorstore")
+
     
     embeddings = get_embeddings()
     if not os.path.exists(os.path.join(vectorstore_dir, "index.faiss")):

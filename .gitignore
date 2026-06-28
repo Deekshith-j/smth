@@ -22,9 +22,6 @@ venv/
 env/
 ENV/
 
-# ─── Vector Store (large binary files — build locally) ───────────────────────
-hr-rag/vectorstore/
-
 # ─── IDE / OS ─────────────────────────────────────────────────────────────────
 .vscode/
 .idea/

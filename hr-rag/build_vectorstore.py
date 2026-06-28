@@ -10,14 +10,20 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from config import get_embeddings
 
+# ─── Resolve paths relative to THIS FILE (cross-platform) ────────────────────
+_THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(_THIS_DIR, "data")
+VECTORSTORE_DIR = os.path.join(_THIS_DIR, "vectorstore")
+
+
 def clean_source_name(filepath):
     filename = os.path.basename(filepath)
-    name_without_ext = os.path.splitext(filename)[0] # e.g. "02_Leave_Policy"
-    # Remove prefix digits like "02_"
+    name_without_ext = os.path.splitext(filename)[0]  # e.g. "02_Leave_Policy"
+    # Remove leading numeric prefix like "02_"
     clean_name = re.sub(r'^\d+_', '', name_without_ext)
     clean_name = clean_name.replace('_', ' ')
-    
-    # Specific adjustments to match canonical names
+
+    # Canonical name adjustments
     if "Compensation and Benefits" in clean_name:
         clean_name = "Compensation & Benefits Policy"
     elif "IT and Data Security" in clean_name:
@@ -30,26 +36,25 @@ def clean_source_name(filepath):
         clean_name = "Onboarding & Separation Policy"
     elif "Work From Home" in clean_name:
         clean_name = "Work From Home Policy"
-    
+
     return clean_name
 
+
 def main():
-    data_dir = r"c:\Users\Deekshith J\OneDrive\Desktop\niat-masterclass-rag-challenge\hr-rag\data"
-    vectorstore_dir = r"c:\Users\Deekshith J\OneDrive\Desktop\niat-masterclass-rag-challenge\hr-rag\vectorstore"
-    
-    print("Loading documents from directory:", data_dir)
-    loader = PyPDFDirectoryLoader(data_dir)
+    os.makedirs(VECTORSTORE_DIR, exist_ok=True)
+
+    print("Loading documents from:", DATA_DIR)
+    loader = PyPDFDirectoryLoader(DATA_DIR)
     raw_documents = loader.load()
-    print(f"Loaded {len(raw_documents)} raw document pages.")
-    
-    # Clean up metadata before chunking so that chunks inherit clean metadata
+    print(f"Loaded {len(raw_documents)} raw pages.")
+
+    # Clean metadata so chunks inherit clean source names
     for doc in raw_documents:
         source_path = doc.metadata.get("source", "")
         doc.metadata["source"] = clean_source_name(source_path)
         doc.metadata["page_number"] = doc.metadata.get("page", 0) + 1
-        
-    # Initialize splitter
-    print("Splitting documents into chunks...")
+
+    print("Splitting into chunks...")
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
         chunk_overlap=200,
@@ -57,19 +62,17 @@ def main():
     )
     chunks = splitter.split_documents(raw_documents)
     print(f"Created {len(chunks)} chunks.")
-    
-    # Initialize embeddings dynamically from config
+
     print("Initializing embedding model...")
     embeddings = get_embeddings()
-    
-    # Build vector store
+
     print("Building FAISS vector store...")
     vectorstore = FAISS.from_documents(chunks, embeddings)
-    
-    # Save vector store
-    print("Saving vector store to:", vectorstore_dir)
-    vectorstore.save_local(vectorstore_dir)
+
+    print("Saving vector store to:", VECTORSTORE_DIR)
+    vectorstore.save_local(VECTORSTORE_DIR)
     print("Vector store saved successfully.")
+
 
 if __name__ == "__main__":
     main()
