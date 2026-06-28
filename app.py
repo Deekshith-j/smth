@@ -147,7 +147,7 @@ with st.sidebar:
     PROVIDERS = ["Groq", "Gemini", "OpenAI"]
     KEY_MAP = {"Groq": "GROQ_API_KEY", "Gemini": "GOOGLE_API_KEY", "OpenAI": "OPENAI_API_KEY"}
     MODEL_MAP = {
-        "Groq": "llama-3.3-70b-versatile",
+        "Groq": "llama-3.1-8b-instant",
         "Gemini": "gemini-1.5-flash",
         "OpenAI": "gpt-4o-mini"
     }

@@ -15,7 +15,7 @@ LLM_MODEL = os.getenv("LLM_MODEL")
 # Set defaults if not provided in env
 if not LLM_MODEL:
     if LLM_PROVIDER == "groq":
-        LLM_MODEL = "llama-3.3-70b-versatile"
+        LLM_MODEL = "llama-3.1-8b-instant"
     elif LLM_PROVIDER == "gemini":
         LLM_MODEL = "gemini-1.5-flash"
     elif LLM_PROVIDER == "openai":
